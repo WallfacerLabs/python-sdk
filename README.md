@@ -83,8 +83,7 @@ except HttpResponseError as e:
 
 - Python 3.8+
 - requests
-- httpx
-- pydantic
+
 
 ## License
 
