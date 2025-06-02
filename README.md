@@ -61,12 +61,7 @@ transaction = client.get_actions(
 ### Other Methods
 - `get_benchmarks()` - Get benchmark data
 
-## Supported Networks
 
-- `mainnet` - Ethereum mainnet
-- `base` - Base network
-- `arbitrum` - Arbitrum network
-- `optimism` - Optimism network
 
 ## Error Handling
 
