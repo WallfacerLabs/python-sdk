@@ -8,7 +8,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="vaultsfyi",
-    version="1.0.0",
+    version="1.0.1",
     author="Kaimi Seeker",
     author_email="kaimi@wallfacer.io",
     description="A Python SDK for interacting with the Vaults.fyi API",

@@ -17,7 +17,18 @@ class HttpResponseError(VaultsFyiError):
 
 class AuthenticationError(VaultsFyiError):
     """Exception raised when API key authentication fails."""
-    pass
+    
+    def __init__(self, message: str, error_id: str = None):
+        super().__init__(message)
+        self.error_id = error_id
+
+
+class ForbiddenError(VaultsFyiError):
+    """Exception raised when API key has exhausted credits or lacks permissions."""
+    
+    def __init__(self, message: str, error_id: str = None):
+        super().__init__(message)
+        self.error_id = error_id
 
 
 class ValidationError(VaultsFyiError):
