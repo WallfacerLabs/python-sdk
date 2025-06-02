@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vaultsfyi"
-version = "1.0.0"
+version = "0.9.1"
 authors = [
     {name = "Kaimi Seeker", email = "kaimi@wallfacer.io"},
 ]
@@ -29,9 +29,9 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/kaimiseeker/vaults-fyi-python"
-"Bug Reports" = "https://github.com/kaimiseeker/vaults-fyi-python/issues"
-"Source" = "https://github.com/kaimiseeker/vaults-fyi-python"
+"Homepage" = "https://github.com/wallfacerlabs/python-sdk"
+"Bug Reports" = "https://github.com/wallfacerlabs/python-sdk/issues"
+"Source" = "https://github.com/wallfacerlabs/python-sdk"
 
 [tool.setuptools.packages.find]
 where = ["."]
