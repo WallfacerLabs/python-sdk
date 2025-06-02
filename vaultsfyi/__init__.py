@@ -9,7 +9,6 @@ from .exceptions import (
     HttpResponseError,
     AuthenticationError,
     ForbiddenError,
-    ValidationError,
     RateLimitError,
     NetworkError,
 )
@@ -24,7 +23,6 @@ __all__ = [
     "HttpResponseError", 
     "AuthenticationError",
     "ForbiddenError",
-    "ValidationError",
     "RateLimitError",
     "NetworkError",
 ]

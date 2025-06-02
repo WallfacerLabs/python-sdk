@@ -31,11 +31,6 @@ class ForbiddenError(VaultsFyiError):
         self.error_id = error_id
 
 
-class ValidationError(VaultsFyiError):
-    """Exception raised when request validation fails."""
-    pass
-
-
 class RateLimitError(VaultsFyiError):
     """Exception raised when API rate limit is exceeded."""
     pass

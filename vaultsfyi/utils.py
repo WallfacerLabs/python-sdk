@@ -36,28 +36,3 @@ def generate_query_params(params: Optional[Dict[str, Any]]) -> str:
     return "?" + urlencode(query_pairs)
 
 
-def snake_to_camel(snake_str: str) -> str:
-    """Convert snake_case to camelCase.
-    
-    Args:
-        snake_str: String in snake_case format
-        
-    Returns:
-        String in camelCase format
-    """
-    components = snake_str.split('_')
-    return components[0] + ''.join(word.capitalize() for word in components[1:])
-
-
-def camel_to_snake(camel_str: str) -> str:
-    """Convert camelCase to snake_case.
-    
-    Args:
-        camel_str: String in camelCase format
-        
-    Returns:
-        String in snake_case format
-    """
-    import re
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_str)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
