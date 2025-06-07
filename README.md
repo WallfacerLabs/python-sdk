@@ -49,9 +49,15 @@ Get information about all available vaults.
 
 ```python
 vaults = client.get_all_vaults(
-    networks=['ethereum', 'polygon'],
-    protocols=['aave', 'compound'],
-    limit=100
+    page=0,
+    perPage=100,
+    allowedNetworks=['mainnet', 'polygon'],
+    allowedProtocols=['aave', 'compound'],
+    allowedAssets=['USDC', 'USDT'],
+    minTvl=1000000,
+    maxTvl=100000000,
+    onlyTransactional=True,
+    onlyAppFeatured=False
 )
 ```
 
@@ -60,7 +66,7 @@ Get detailed information about a specific vault.
 
 ```python
 vault = client.get_vault(
-    network='ethereum',
+    network='mainnet',
     vault_address='0x1234...'
 )
 ```
@@ -72,10 +78,13 @@ Get historical APY and TVL data for a vault.
 
 ```python
 historical_data = client.get_vault_historical_data(
-    network='ethereum',
+    network='mainnet',
     vault_address='0x1234...',
-    period='30d',
-    granularity='daily'
+    page=0,
+    perPage=100,
+    apyInterval='30day',
+    fromTimestamp=1640995200,
+    toTimestamp=1672531200
 )
 ```
 
@@ -87,7 +96,7 @@ Get all positions for a user address.
 ```python
 positions = client.get_positions(
     user_address='0x1234...',
-    networks=['ethereum', 'polygon']
+    allowedNetworks=['mainnet', 'polygon']
 )
 ```
 
@@ -97,8 +106,17 @@ Get the best deposit options for a user.
 ```python
 options = client.get_deposit_options(
     user_address='0x1234...',
-    amount='1000',
-    asset='USDC'
+    allowed_assets=['USDC', 'USDT'],
+    allowedNetworks=['mainnet', 'polygon'],
+    allowedProtocols=['aave', 'compound'],
+    minTvl=1000000,
+    minApy=0.05,
+    minUsdAssetValueThreshold=1000,
+    onlyTransactional=True,
+    onlyAppFeatured=False,
+    apyInterval='7day',
+    alwaysReturnAssets=['USDC'],
+    maxVaultsPerAsset=5
 )
 ```
 
@@ -117,7 +135,7 @@ Get total returns for a specific user and vault.
 ```python
 returns = client.get_vault_total_returns(
     user_address='0x1234...',
-    network='ethereum',
+    network='mainnet',
     vault_address='0x5678...'
 )
 ```
@@ -128,7 +146,7 @@ Get events (deposits, withdrawals) for a specific user and vault.
 ```python
 events = client.get_vault_holder_events(
     user_address='0x1234...',
-    network='ethereum',
+    network='mainnet',
     vault_address='0x5678...'
 )
 ```
@@ -141,7 +159,7 @@ Get transaction context for a specific vault interaction.
 ```python
 context = client.get_transactions_context(
     user_address='0x1234...',
-    network='ethereum',
+    network='mainnet',
     vault_address='0x5678...'
 )
 ```
@@ -153,9 +171,11 @@ Get available actions (deposit, withdraw, etc.) for a vault.
 actions = client.get_actions(
     action='deposit',
     user_address='0x1234...',
-    network='ethereum',
+    network='mainnet',
     vault_address='0x5678...',
-    amount='1000'
+    amount='1000000000',
+    asset_address='0xA0b86a33E6b2e7d8bB9bdB1c23f6fD7b52b5c8e2',
+    simulate=False
 )
 ```
 
@@ -195,7 +215,3 @@ except HttpResponseError as e:
 ## License
 
 MIT License
-
-## Author
-
-Kaimi Seeker (kaimi@wallfacer.io)
