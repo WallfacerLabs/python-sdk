@@ -130,17 +130,69 @@ class VaultsSdk:
         except requests.exceptions.RequestException as e:
             raise NetworkError(f"Network error: {str(e)}")
     
-    # V1 API Methods
+    # V2 API Methods - Benchmarks
     
-    def get_benchmarks(self) -> Dict[str, Any]:
-        """Get benchmark data.
+    def get_benchmarks(
+        self,
+        network: str,
+        code: str
+    ) -> Dict[str, Any]:
+        """Get benchmark APY data for a specific network and benchmark code.
         
+        Args:
+            network: Network name (e.g., 'mainnet', 'base', 'arbitrum')
+            code: Benchmark code ('usd' or 'eth')
+            
         Returns:
-            Benchmark data
+            Benchmark APY data with timestamp
         """
-        return self._make_request("/v1/benchmarks")
+        endpoint = f"/v2/benchmarks/{network}"
+        params = {"query": {"code": code}}
+        return self._make_request(endpoint, params)
     
-    # V2 API Methods
+    def get_historical_benchmarks(
+        self,
+        network: str,
+        code: str,
+        page: Optional[int] = None,
+        per_page: Optional[int] = None,
+        from_timestamp: Optional[int] = None,
+        to_timestamp: Optional[int] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get historical benchmark APY data with pagination.
+        
+        Args:
+            network: Network name (e.g., 'mainnet', 'base', 'arbitrum')
+            code: Benchmark code ('usd' or 'eth')
+            page: Page number (starting from 0)
+            per_page: Number of items per page
+            from_timestamp: Start timestamp for filtering
+            to_timestamp: End timestamp for filtering
+            **kwargs: Additional query parameters
+            
+        Returns:
+            Paginated historical benchmark data
+        """
+        endpoint = f"/v2/historical-benchmarks/{network}"
+        query_params = {"code": code}
+        
+        if page is not None:
+            query_params['page'] = page
+        if per_page is not None:
+            query_params['perPage'] = per_page
+        if from_timestamp is not None:
+            query_params['fromTimestamp'] = from_timestamp
+        if to_timestamp is not None:
+            query_params['toTimestamp'] = to_timestamp
+        
+        # Add any additional kwargs
+        query_params.update(kwargs)
+        
+        params = {"query": query_params}
+        return self._make_request(endpoint, params)
+    
+    # V2 API Methods - Portfolio & Vaults
     
     def get_vault_historical_data(
         self,

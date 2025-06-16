@@ -181,12 +181,43 @@ actions = client.get_actions(
 
 ### Benchmark Methods
 
-#### `get_benchmarks()`
-Get benchmark data for comparing vault performance.
+#### `get_benchmarks(network, code)`
+Get benchmark APY data for a specific network and benchmark code.
 
 ```python
-benchmarks = client.get_benchmarks()
+# Get USD benchmark for mainnet
+usd_benchmark = client.get_benchmarks('mainnet', 'usd')
+
+# Get ETH benchmark for mainnet
+eth_benchmark = client.get_benchmarks('mainnet', 'eth')
 ```
+
+#### `get_historical_benchmarks(network, code, **kwargs)`
+Get historical benchmark APY data with pagination and filtering.
+
+```python
+# Get historical USD benchmarks with basic pagination
+historical = client.get_historical_benchmarks(
+    network='mainnet',
+    code='usd',
+    page=0,
+    per_page=100
+)
+
+# Get historical ETH benchmarks with timestamp filtering
+historical_filtered = client.get_historical_benchmarks(
+    network='mainnet',
+    code='eth',
+    from_timestamp=1640995200,
+    to_timestamp=1672531200,
+    page=0,
+    per_page=50
+)
+```
+
+**Available benchmark codes:**
+- `'usd'` - USD benchmark rate (includes Aave v3 USDC/USDT, sDAI, Compound v3 USDC)
+- `'eth'` - ETH benchmark rate (includes Lido stETH, ether.fi eETH, Coinbase cbETH, Rocket Pool rETH)
 
 
 
