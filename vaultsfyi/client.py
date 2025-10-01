@@ -1,7 +1,7 @@
 """Main client for the Vaults.fyi SDK."""
 
 import json
-from typing import Dict, Any, Optional, Union, List
+from typing import Dict, Any, Optional, List
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -130,6 +130,119 @@ class VaultsSdk:
         except requests.exceptions.RequestException as e:
             raise NetworkError(f"Network error: {str(e)}")
     
+    # V2 API Methods - Health & Basic Data
+
+    def get_health(self) -> Dict[str, Any]:
+        """Get API health status.
+
+        Returns:
+            API health status
+        """
+        endpoint = "/v2/health"
+        return self._make_request(endpoint)
+
+    def get_vaults(
+        self,
+        page: Optional[int] = None,
+        per_page: Optional[int] = None,
+        network: Optional[str] = None,
+        asset_symbol: Optional[str] = None,
+        only_transactional: Optional[bool] = None,
+        only_app_featured: Optional[bool] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get basic list of vaults with simple filtering.
+
+        Args:
+            page: Page number (starting from 0)
+            per_page: Number of items per page
+            network: Network name filter
+            asset_symbol: Asset symbol filter
+            only_transactional: Filter for transactional vaults only
+            only_app_featured: Filter for app-featured vaults only
+            **kwargs: Additional query parameters
+
+        Returns:
+            Basic vaults list
+        """
+        endpoint = "/v2/vaults"
+        query_params = {}
+
+        if page is not None:
+            query_params['page'] = page
+        if per_page is not None:
+            query_params['perPage'] = per_page
+        if network is not None:
+            query_params['network'] = network
+        if asset_symbol is not None:
+            query_params['assetSymbol'] = asset_symbol
+        if only_transactional is not None:
+            query_params['onlyTransactional'] = only_transactional
+        if only_app_featured is not None:
+            query_params['onlyAppFeatured'] = only_app_featured
+
+        query_params.update(kwargs)
+        params = {"query": query_params} if query_params else None
+        return self._make_request(endpoint, params)
+
+    def get_assets(
+        self,
+        page: Optional[int] = None,
+        per_page: Optional[int] = None,
+        network: Optional[str] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get list of supported assets.
+
+        Args:
+            page: Page number (starting from 0)
+            per_page: Number of items per page
+            network: Network name filter
+            **kwargs: Additional query parameters
+
+        Returns:
+            List of supported assets
+        """
+        endpoint = "/v2/assets"
+        query_params = {}
+
+        if page is not None:
+            query_params['page'] = page
+        if per_page is not None:
+            query_params['perPage'] = per_page
+        if network is not None:
+            query_params['network'] = network
+
+        query_params.update(kwargs)
+        params = {"query": query_params} if query_params else None
+        return self._make_request(endpoint, params)
+
+    def get_networks(self, **kwargs) -> Dict[str, Any]:
+        """Get list of supported blockchain networks.
+
+        Args:
+            **kwargs: Additional query parameters
+
+        Returns:
+            List of supported networks
+        """
+        endpoint = "/v2/networks"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_tags(self, **kwargs) -> Dict[str, Any]:
+        """Get list of vault categorization tags.
+
+        Args:
+            **kwargs: Additional query parameters
+
+        Returns:
+            List of vault tags
+        """
+        endpoint = "/v2/tags"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
     # V2 API Methods - Benchmarks
     
     def get_benchmarks(
@@ -201,16 +314,76 @@ class VaultsSdk:
         **kwargs
     ) -> Dict[str, Any]:
         """Get historical data for a specific vault.
-        
+
         Args:
             network: Network name (e.g., 'mainnet', 'base', 'arbitrum')
             vault_address: Vault contract address
             **kwargs: Additional query parameters
-            
+
         Returns:
             Historical vault data
         """
         endpoint = f"/v2/historical/{network}/{vault_address}"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_vault_historical_apy(
+        self,
+        network: str,
+        vault_address: str,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get historical APY data for a specific vault.
+
+        Args:
+            network: Network name
+            vault_address: Vault contract address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Historical APY data
+        """
+        endpoint = f"/v2/historical/{network}/{vault_address}/apy"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_vault_historical_tvl(
+        self,
+        network: str,
+        vault_address: str,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get historical TVL data for a specific vault.
+
+        Args:
+            network: Network name
+            vault_address: Vault contract address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Historical TVL data
+        """
+        endpoint = f"/v2/historical/{network}/{vault_address}/tvl"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_vault_historical_share_price(
+        self,
+        network: str,
+        vault_address: str,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get historical share price data for a specific vault.
+
+        Args:
+            network: Network name
+            vault_address: Vault contract address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Historical share price data
+        """
+        endpoint = f"/v2/historical/{network}/{vault_address}/sharePrice"
         params = {"query": kwargs} if kwargs else None
         return self._make_request(endpoint, params)
     
@@ -222,31 +395,67 @@ class VaultsSdk:
         **kwargs
     ) -> Dict[str, Any]:
         """Get total returns for a user in a specific vault.
-        
+
         Args:
             user_address: User's wallet address
             network: Network name
             vault_address: Vault contract address
             **kwargs: Additional query parameters
-            
+
         Returns:
             Total returns data
         """
-        endpoint = f"/v2/portfolio/returns/{user_address}/{network}/{vault_address}"
+        endpoint = f"/v2/portfolio/total-returns/{user_address}/{network}/{vault_address}"
         params = {"query": kwargs} if kwargs else None
         return self._make_request(endpoint, params)
     
     def get_positions(self, user_address: str, **kwargs) -> Dict[str, Any]:
         """Get all positions for a user.
-        
+
         Args:
             user_address: User's wallet address
             **kwargs: Additional query parameters
-            
+
         Returns:
             User positions data
         """
         endpoint = f"/v2/portfolio/positions/{user_address}"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_position(
+        self,
+        user_address: str,
+        network: str,
+        vault_address: str,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get a specific position for a user in a vault.
+
+        Args:
+            user_address: User's wallet address
+            network: Network name
+            vault_address: Vault contract address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Single position data
+        """
+        endpoint = f"/v2/portfolio/positions/{user_address}/{network}/{vault_address}"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_best_vault(self, user_address: str, **kwargs) -> Dict[str, Any]:
+        """Get the best vault opportunity for a user.
+
+        Args:
+            user_address: User's wallet address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Best vault recommendation data
+        """
+        endpoint = f"/v2/portfolio/best-vault/{user_address}"
         params = {"query": kwargs} if kwargs else None
         return self._make_request(endpoint, params)
     
@@ -311,16 +520,56 @@ class VaultsSdk:
     
     def get_vault(self, network: str, vault_address: str, **kwargs) -> Dict[str, Any]:
         """Get detailed information for a specific vault.
-        
+
         Args:
             network: Network name
             vault_address: Vault contract address
             **kwargs: Additional query parameters
-            
+
         Returns:
             Detailed vault data
         """
         endpoint = f"/v2/detailed-vaults/{network}/{vault_address}"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_vault_apy_breakdown(
+        self,
+        network: str,
+        vault_address: str,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get APY breakdown for a specific vault.
+
+        Args:
+            network: Network name
+            vault_address: Vault contract address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Vault APY breakdown data
+        """
+        endpoint = f"/v2/detailed-vaults/{network}/{vault_address}/apy"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_vault_tvl_breakdown(
+        self,
+        network: str,
+        vault_address: str,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Get TVL breakdown for a specific vault.
+
+        Args:
+            network: Network name
+            vault_address: Vault contract address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Vault TVL breakdown data
+        """
+        endpoint = f"/v2/detailed-vaults/{network}/{vault_address}/tvl"
         params = {"query": kwargs} if kwargs else None
         return self._make_request(endpoint, params)
     
@@ -372,7 +621,7 @@ class VaultsSdk:
         **kwargs
     ) -> Dict[str, Any]:
         """Get transaction actions for deposit/withdraw operations.
-        
+
         Args:
             action: Action type ('deposit', 'redeem', etc.)
             user_address: User's wallet address
@@ -382,18 +631,48 @@ class VaultsSdk:
             asset_address: Asset contract address
             simulate: Whether to simulate the transaction
             **kwargs: Additional query parameters
-            
+
         Returns:
             Transaction action data
         """
         endpoint = f"/v2/transactions/{action}/{user_address}/{network}/{vault_address}"
-        
+
         query_params = kwargs.copy()
         if amount is not None:
             query_params['amount'] = amount
         if asset_address is not None:
             query_params['assetAddress'] = asset_address
         query_params['simulate'] = simulate
-        
+
         params = {"query": query_params} if query_params else None
+        return self._make_request(endpoint, params)
+
+    # V2 API Methods - Rewards
+
+    def get_rewards_context(self, user_address: str, **kwargs) -> Dict[str, Any]:
+        """Get rewards context for a user.
+
+        Args:
+            user_address: User's wallet address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Rewards context data
+        """
+        endpoint = f"/v2/transactions/rewards/context/{user_address}"
+        params = {"query": kwargs} if kwargs else None
+        return self._make_request(endpoint, params)
+
+    def get_rewards_claim(self, user_address: str, **kwargs) -> Dict[str, Any]:
+        """Get rewards claim transaction data for a user.
+
+        Args:
+            user_address: User's wallet address
+            **kwargs: Additional query parameters
+
+        Returns:
+            Rewards claim transaction data
+        """
+        endpoint = f"/v2/transactions/rewards/claim/{user_address}"
+        params = {"query": kwargs} if kwargs else None
         return self._make_request(endpoint, params)
