@@ -42,6 +42,57 @@ transaction = client.get_actions(
 
 ## API Methods
 
+### Health & Basic Data Methods
+
+#### `get_health()`
+Get API health status.
+
+```python
+health = client.get_health()
+# Returns: {'status': 'Success', 'message': 'Application is healthy'}
+```
+
+#### `get_networks(**kwargs)`
+Get list of supported blockchain networks.
+
+```python
+networks = client.get_networks()
+# Returns list of networks with chainId and networkCaip
+```
+
+#### `get_tags(**kwargs)`
+Get list of vault categorization tags.
+
+```python
+tags = client.get_tags()
+# Returns list of tags like ['Bridge', 'CDP', 'Liquid Staking', 'RWA', ...]
+```
+
+#### `get_assets(page=None, per_page=None, network=None, **kwargs)`
+Get list of supported assets.
+
+```python
+assets = client.get_assets(
+    page=0,
+    per_page=50,
+    network='mainnet'
+)
+```
+
+#### `get_vaults(page=None, per_page=None, network=None, asset_symbol=None, **kwargs)`
+Get basic list of vaults with simple filtering.
+
+```python
+vaults = client.get_vaults(
+    page=0,
+    per_page=20,
+    network='mainnet',
+    asset_symbol='USDC',
+    only_transactional=True,
+    only_app_featured=False
+)
+```
+
 ### Vault Methods
 
 #### `get_all_vaults(**kwargs)`
@@ -71,6 +122,26 @@ vault = client.get_vault(
 )
 ```
 
+#### `get_vault_apy_breakdown(network, vault_address, **kwargs)`
+Get APY breakdown for a specific vault.
+
+```python
+apy_breakdown = client.get_vault_apy_breakdown(
+    network='mainnet',
+    vault_address='0x1234...'
+)
+```
+
+#### `get_vault_tvl_breakdown(network, vault_address, **kwargs)`
+Get TVL breakdown for a specific vault.
+
+```python
+tvl_breakdown = client.get_vault_tvl_breakdown(
+    network='mainnet',
+    vault_address='0x1234...'
+)
+```
+
 ### Historical Data Methods
 
 #### `get_vault_historical_data(network, vault_address, **kwargs)`
@@ -88,6 +159,42 @@ historical_data = client.get_vault_historical_data(
 )
 ```
 
+#### `get_vault_historical_apy(network, vault_address, **kwargs)`
+Get historical APY data for a specific vault.
+
+```python
+historical_apy = client.get_vault_historical_apy(
+    network='mainnet',
+    vault_address='0x1234...',
+    page=0,
+    perPage=100
+)
+```
+
+#### `get_vault_historical_tvl(network, vault_address, **kwargs)`
+Get historical TVL data for a specific vault.
+
+```python
+historical_tvl = client.get_vault_historical_tvl(
+    network='mainnet',
+    vault_address='0x1234...',
+    page=0,
+    perPage=100
+)
+```
+
+#### `get_vault_historical_share_price(network, vault_address, **kwargs)`
+Get historical share price data for a specific vault.
+
+```python
+historical_price = client.get_vault_historical_share_price(
+    network='mainnet',
+    vault_address='0x1234...',
+    page=0,
+    perPage=100
+)
+```
+
 ### Portfolio Methods
 
 #### `get_positions(user_address, **kwargs)`
@@ -97,6 +204,26 @@ Get all positions for a user address.
 positions = client.get_positions(
     user_address='0x1234...',
     allowedNetworks=['mainnet', 'polygon']
+)
+```
+
+#### `get_position(user_address, network, vault_address, **kwargs)`
+Get a specific position for a user in a vault.
+
+```python
+position = client.get_position(
+    user_address='0x1234...',
+    network='mainnet',
+    vault_address='0x5678...'
+)
+```
+
+#### `get_best_vault(user_address, **kwargs)`
+Get the best vault opportunity for a user.
+
+```python
+best_vault = client.get_best_vault(
+    user_address='0x1234...'
 )
 ```
 
@@ -176,6 +303,28 @@ actions = client.get_actions(
     amount='1000000000',
     asset_address='0xA0b86a33E6b2e7d8bB9bdB1c23f6fD7b52b5c8e2',
     simulate=False
+)
+```
+
+### Rewards Methods
+
+#### `get_rewards_context(user_address, **kwargs)`
+Get rewards context for a user.
+
+```python
+rewards_context = client.get_rewards_context(
+    user_address='0x1234...'
+)
+```
+
+#### `get_rewards_claim(user_address, **kwargs)`
+Get rewards claim transaction data for a user.
+
+```python
+# Note: claimIds parameter is required by the API
+rewards_claim = client.get_rewards_claim(
+    user_address='0x1234...',
+    claimIds=['claim1', 'claim2']
 )
 ```
 
